@@ -9,6 +9,8 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
-    "@ffmpeg-installer/ffmpeg": "^1.0.20"
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
+    "dotenv": "^8.2.0",
+    "twitter": "^1.7.1"
   }
 }
