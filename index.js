@@ -1,8 +1,18 @@
 const download = require('./lib/download').download;
 const trim = require('./lib/trim').trim;
 const tweet = require('./lib/tweet').tweet;
+const video = require('./lib/video').video;
 
-download('https://www.youtube.com/watch?v=9cY5m03rPpM')
-  .then(source => trim(source, 0, 30))
-  .then(output => tweet(output, 'ダウンロードしてアップロードするテストです'))
-  .catch(console.error);
+async function main() {
+  const { title, url } = await video();
+  const status =
+    title.replace(/【ハックフォープレイ実況】/, ' #HackforPlay') +
+    '\n\nつづきはこちら↓\n' +
+    url;
+  const source = await download(url);
+  const output = await trim(source, 0, 30);
+
+  await tweet(output, status);
+}
+
+main().then(console.log, console.error);
