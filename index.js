@@ -25,5 +25,6 @@ async function main() {
   const source = await download(url);
   const output = await trim(source, 0, 30);
 
+  console.log('tweet', status);
   await tweet(output, status);
 }
