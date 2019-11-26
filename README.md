@@ -2,6 +2,10 @@
 
 Download video from youtube channel and upload it twitter.
 
+## Install
+
+> npm install --save youtube-to-twitter
+
 ## Example
 
 See [server.js](server.js)
