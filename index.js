@@ -1,7 +1,20 @@
+const express = require('express');
 const download = require('./lib/download').download;
 const trim = require('./lib/trim').trim;
 const tweet = require('./lib/tweet').tweet;
 const video = require('./lib/video').video;
+
+const app = express();
+
+app.get('/', async (req, res) => {
+  res.sendStatus(200);
+  await main();
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`listen on port ${port}`);
+});
 
 async function main() {
   const { title, url } = await video();
@@ -14,5 +27,3 @@ async function main() {
 
   await tweet(output, status);
 }
-
-main().then(console.log, console.error);
