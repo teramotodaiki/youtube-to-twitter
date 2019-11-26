@@ -24,7 +24,7 @@ app.listen(port, () => {
 
 async function main() {
   const start = parseInt(process.env.VIDEO_START, 10) || 0;
-  const duration = parseInt(process.env.VIDEO_DURATION, 10) || 30;
+  const duration = Math.min(30, parseInt(process.env.VIDEO_DURATION, 10)) || 30;
 
   const { title, url } = await video();
   const status =
