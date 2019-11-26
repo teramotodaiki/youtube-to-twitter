@@ -8,6 +8,10 @@
   },
   "author": "",
   "license": "UNLICENSED",
+  "engines": {
+    "node": ">= 10.16.0",
+    "npm": ">= 6.12.0"
+  },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "dotenv": "^8.2.0",
