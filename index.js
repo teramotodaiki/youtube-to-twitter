@@ -1,7 +1,7 @@
 const express = require('express');
 const download = require('./lib/download').download;
 const trim = require('./lib/trim').trim;
-const tweet = require('./lib/tweet').tweet;
+const { tweet, upload } = require('./lib/tweet');
 const video = require('./lib/video').video;
 
 const app = express();
@@ -31,9 +31,12 @@ async function main() {
     title.replace(/【ハックフォープレイ実況】/, ' #HackforPlay') +
     '\n\nつづきはこちら↓\n' +
     url;
+  console.log('next tweet:\n', status);
+
   const source = await download(url);
   const output = await trim(source, start, start + duration);
 
-  console.log('tweet', status);
-  await tweet(output, status);
+  const mediaId = await upload(output);
+  console.log('success', mediaId);
+  // await tweet(mediaId, status);
 }
