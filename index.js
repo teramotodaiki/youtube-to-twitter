@@ -7,14 +7,8 @@ const video = require('./lib/video').video;
 const app = express();
 
 app.get('/', async (req, res) => {
-  main()
-    .then(() => {
-      res.sendStatus(200);
-    })
-    .catch(err => {
-      console.error(err);
-      res.sendStatus(500);
-    });
+  res.sendStatus(200);
+  main();
 });
 
 const port = process.env.PORT || 3000;
