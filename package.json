@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "UNLICENSED",
+  "author": "teramotodaiki",
+  "license": "MIT",
   "engines": {
     "node": ">= 10.16.0",
     "npm": ">= 6.12.0"
