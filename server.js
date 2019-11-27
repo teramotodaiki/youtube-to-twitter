@@ -28,7 +28,7 @@ async function main() {
   console.log('next tweet:\n', status);
 
   const source = await download(url);
-  const output = await trim(source, start, start + duration);
+  const output = await trim(source, start, duration);
 
   const mediaId = await upload(output);
   await tweet(mediaId, status);
