@@ -1,4 +1,5 @@
 const express = require('express');
+const fs = require('fs').promises;
 const { download, trim, tweet, upload, video } = require('./index');
 
 const app = express();
@@ -29,7 +30,9 @@ async function main() {
 
   const source = await download(url);
   const output = await trim(source, start, duration);
+  await fs.unlink(source);
 
   const mediaId = await upload(output);
+  await fs.unlink(output);
   await tweet(mediaId, status);
 }
