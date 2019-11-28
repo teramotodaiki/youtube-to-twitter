@@ -23,7 +23,7 @@ async function main() {
 
   const { title, url } = await video();
   const status =
-    title.replace(/【ハックフォープレイ実況】/, ' #HackforPlay') +
+    title.replace(/【ハックフォープレイ実況】/, '') +
     '\n\nつづきはこちら↓\n' +
     url;
   console.log('next tweet:\n', status);
