@@ -7,9 +7,7 @@ const app = express();
 app.get('/', async (req, res) => {
   res.sendStatus(200);
 
-  main()
-    .then(console.log)
-    .catch(console.error);
+  main().then(console.log).catch(console.error);
 });
 
 const port = process.env.PORT || 3000;
