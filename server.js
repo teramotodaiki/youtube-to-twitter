@@ -1,6 +1,6 @@
 const express = require('express');
 const fs = require('fs').promises;
-const { download, trim, tweet, upload, video } = require('./index');
+const { download, trim, tweet, upload, getVideos } = require('./index');
 
 const app = express();
 
@@ -19,18 +19,31 @@ async function main() {
   const start = parseInt(process.env.VIDEO_START, 10) || 0;
   const duration = parseInt(process.env.VIDEO_DURATION, 10) || 30;
 
-  const { title, url } = await video();
-  const status =
-    title.replace(/【ハックフォープレイ実況】/, '') +
-    '\n\nつづきはこちら↓\n' +
-    url;
-  console.log('next tweet:\n', status);
+  const videos = await getVideos();
 
-  const source = await download(url);
-  const output = await trim(source, start, duration);
-  await fs.unlink(source);
+  // 直近で紹介していない動画を順番にダウンロードとアップロードを試みる
+  for (const { title, url } of videos) {
+    let mediaId = '';
+    try {
+      const source = await download(url);
+      const output = await trim(source, start, duration);
+      await fs.unlink(source);
 
-  const mediaId = await upload(output);
-  await fs.unlink(output);
-  await tweet(mediaId, status);
+      mediaId = await upload(output);
+      await fs.unlink(output);
+    } catch (error) {
+      console.warn(error);
+      continue;
+    }
+
+    // アップロードに成功したのでツイートして終了
+    const status =
+      title.replace(/【ハックフォープレイ実況】/, '') +
+      '\n\nつづきはこちら↓\n' +
+      url;
+    console.log('next tweet:\n', status);
+    await tweet(mediaId, status);
+
+    break;
+  }
 }
