@@ -19,36 +19,46 @@ async function main() {
   const start = parseInt(process.env.VIDEO_START, 10) || 0;
   const duration = parseInt(process.env.VIDEO_DURATION, 10) || 30;
 
-  const videos = await getVideos();
+  let lastError = null; // ひとつもツイート出来なかった場合 Slack に通知する
 
-  // 直近で紹介していない動画を順番にダウンロードとアップロードを試みる
-  for (const { title, url } of videos) {
-    let mediaId = '';
-    try {
-      const source = await download(url);
-      const output = await trim(source, start, duration);
-      await fs.unlink(source);
+  try {
+    const videos = await getVideos();
 
-      mediaId = await upload(output);
-      await fs.unlink(output);
-    } catch (error) {
-      console.warn(error);
+    // 直近で紹介していない動画を順番にダウンロードとアップロードを試みる
+    for (const { title, url } of videos) {
+      let mediaId = '';
       try {
-        await slack(error.message);
+        const source = await download(url);
+        const output = await trim(source, start, duration);
+        await fs.unlink(source);
+
+        mediaId = await upload(output);
+        await fs.unlink(output);
       } catch (error) {
-        console.warn('Failed to send slack webhook!', error);
+        console.warn(error);
+        lastError = error; // エラーを保持して次へ
+        continue;
       }
-      continue;
+
+      // アップロードに成功したのでツイートして終了
+      const status =
+        title.replace(/【ハックフォープレイ実況】/, '') +
+        '\n\nつづきはこちら↓\n' +
+        url;
+      console.log('next tweet:\n', status);
+      await tweet(mediaId, status);
+
+      return;
     }
 
-    // アップロードに成功したのでツイートして終了
-    const status =
-      title.replace(/【ハックフォープレイ実況】/, '') +
-      '\n\nつづきはこちら↓\n' +
-      url;
-    console.log('next tweet:\n', status);
-    await tweet(mediaId, status);
-
-    break;
+    if (lastError) {
+      throw lastError;
+    }
+  } catch (error) {
+    try {
+      await slack(error.message);
+    } catch (error) {
+      console.warn('Failed to send slack webhook!', error);
+    }
   }
 }
