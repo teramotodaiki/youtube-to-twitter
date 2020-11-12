@@ -1,6 +1,6 @@
 const express = require('express');
 const fs = require('fs').promises;
-const { download, trim, tweet, upload, getVideos } = require('./index');
+const { download, slack, trim, tweet, upload, getVideos } = require('./index');
 
 const app = express();
 
@@ -33,6 +33,11 @@ async function main() {
       await fs.unlink(output);
     } catch (error) {
       console.warn(error);
+      try {
+        await slack(error.message);
+      } catch (error) {
+        console.warn('Failed to send slack webhook!', error);
+      }
       continue;
     }
 
