@@ -4,7 +4,11 @@ const { download, slack, trim, tweet, upload, getVideos } = require('./index');
 
 const app = express();
 
-app.get('/', async (req, res) => {
+app.get('/', (req, res) => {
+  res.sendStatus(200);
+});
+
+app.get('/update', async (req, res) => {
   res.sendStatus(200);
   const dryRun = req.query.dryRun === 'true'; // ?dryRun=true でモード有効化
 
