@@ -28,7 +28,7 @@ async function main({ dryRun = false }) {
 
   try {
     const videos = await getVideos();
-    videos.splice(10); // 最大10件までリトライ
+    videos.reverse().splice(10); // 古い順に最大10件までリトライ
 
     // 直近で紹介していない動画を順番にダウンロードとアップロードを試みる
     for (const { title, url } of videos) {
