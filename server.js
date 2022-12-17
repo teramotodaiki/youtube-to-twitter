@@ -6,8 +6,9 @@ const app = express();
 
 app.get('/', async (req, res) => {
   res.sendStatus(200);
+  const dryRun = req.query.dryRun === 'true'; // ?dryRun=true でモード有効化
 
-  main().then(console.log).catch(console.error);
+  main({ dryRun }).then(console.log).catch(console.error);
 });
 
 const port = process.env.PORT || 3000;
@@ -15,7 +16,7 @@ app.listen(port, () => {
   console.log(`listen on port ${port}`);
 });
 
-async function main() {
+async function main({ dryRun = false }) {
   const start = parseInt(process.env.VIDEO_START, 10) || 0;
   const duration = parseInt(process.env.VIDEO_DURATION, 10) || 30;
 
@@ -41,6 +42,10 @@ async function main() {
         continue;
       }
 
+      if (dryRun) {
+        return;
+      }
+
       // アップロードに成功したのでツイートして終了
       const status =
         title.replace(/【ハックフォープレイ実況】/, '') +
@@ -53,6 +58,10 @@ async function main() {
     }
 
     if (lastError) {
+      if (dryRun) {
+        console.error(lastError);
+        return;
+      }
       throw lastError;
     }
   } catch (error) {
