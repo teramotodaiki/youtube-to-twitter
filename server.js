@@ -23,6 +23,7 @@ async function main() {
 
   try {
     const videos = await getVideos();
+    videos.splice(10); // 最大10件までリトライ
 
     // 直近で紹介していない動画を順番にダウンロードとアップロードを試みる
     for (const { title, url } of videos) {
