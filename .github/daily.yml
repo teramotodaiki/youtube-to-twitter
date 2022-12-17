@@ -1,0 +1,12 @@
+name: Daily
+on:
+  schedule:
+    # 14:30 JST
+    - cron: '30 5 * * *'
+
+jobs:
+  test_schedule:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run app on render.com
+        run: curl https://youtube-to-twitter.onrender.com/update
